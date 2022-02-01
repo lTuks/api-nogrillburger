@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Optional
 from bson import ObjectId
 
-URL_mongo = "mongodb+srv://dbNoGrill:XFN0bN4NJqQ0pYXz@nogrillburger.fvgs7.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+URL_mongo = "mongodb+srv://dbNoGrill:XFN0bN4NJqQ0pYXz@nogrillburger.fvgs7.mongodb.net/NoGrillBurger?retryWrites=true&w=majority"
 client = MongoClient(URL_mongo)
 db = client["NoGrillBurger"]
 
