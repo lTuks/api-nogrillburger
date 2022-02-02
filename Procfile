@@ -1,1 +1,1 @@
-web: uvicorn app.main:noGrill
+web: gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:noGrill
