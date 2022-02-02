@@ -28,7 +28,7 @@ async def list_others(api_key: APIKey = Depends(get_api_key)):
 @noGrill.get("/client/")
 async def list_clients():
     clients = []
-    async for client in db["client"].find():
+    for client in db["client"].find():
         await clients.append(Client(**client))
         clients = jsonable_encoder(clients)
     return JSONResponse(status_code=status.HTTP_200_OK, content=clients)
