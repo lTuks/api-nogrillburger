@@ -4,9 +4,18 @@ from fastapi.responses import JSONResponse
 from fastapi.security.api_key import APIKey
 from fastapi import FastAPI, status, Depends
 from fastapi.encoders import jsonable_encoder
+from fastapi.middleware.cors import CORSMiddleware
 from app.models import db, Burger, Other, Client, Order, Stock
 
 noGrill = FastAPI(openapi_url=None)
+
+noGrill.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=["token"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @noGrill.get("/burger/")
@@ -26,7 +35,7 @@ async def list_others(api_key: APIKey = Depends(get_api_key)):
 
 
 @noGrill.get("/client/")
-async def list_clients():
+async def list_clients(api_key: APIKey = Depends(get_api_key)):
     clients = []
     for client in db["client"].find():
         clients.append(Client(**client))
