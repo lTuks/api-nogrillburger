@@ -3,9 +3,10 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Optional
 from bson import ObjectId
+from boto.s3.connection import S3Connection
 
-MONGODB_URI = "mongodb+srv://dbNoGrill:XFN0bN4NJqQ0pYXz@nogrillburger.fvgs7.mongodb.net/NoGrillBurger?retryWrites=true&w=majority"
-client = MongoClient(MONGODB_URI)
+URI = S3Connection(os.environ["MONGODB_URI"])
+client = MongoClient(URI)
 db = client["NoGrillBurger"]
 
 
