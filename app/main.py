@@ -12,7 +12,7 @@ noGrill = FastAPI(openapi_url=None)
 @noGrill.get("/burger/")
 async def list_burgers(api_key: APIKey = Depends(get_api_key)):
     burgers = []
-    async for burger in db["burger"].find():
+    for burger in db["burger"].find():
         burgers.append(Burger(**burger))
     return JSONResponse(status_code=status.HTTP_200_OK, content=burgers)
 
@@ -20,7 +20,7 @@ async def list_burgers(api_key: APIKey = Depends(get_api_key)):
 @noGrill.get("/other/")
 async def list_others(api_key: APIKey = Depends(get_api_key)):
     others = []
-    async for other in db["other"].find():
+    for other in db["other"].find():
         others.append(Other(**other))
     return JSONResponse(status_code=status.HTTP_200_OK, content=others)
 
@@ -28,7 +28,7 @@ async def list_others(api_key: APIKey = Depends(get_api_key)):
 @noGrill.get("/client/")
 async def list_clients(api_key: APIKey = Depends(get_api_key)):
     clients = []
-    async for client in db["client"].find():
+    for client in db["client"].find():
         clients.append(Client(**client))
         clients = jsonable_encoder(clients)
     return JSONResponse(status_code=status.HTTP_200_OK, content=clients)
@@ -39,7 +39,7 @@ async def one_clients(client_name: str, api_key: APIKey = Depends(get_api_key)):
     clients = []
     client_filter = []
 
-    async for client in db["client"].find():
+    for client in db["client"].find():
         clients.append(Client(**client))
     clients = jsonable_encoder(clients)
     for i in range(len(clients)):
@@ -56,8 +56,8 @@ async def one_clients(client_name: str, api_key: APIKey = Depends(get_api_key)):
 @noGrill.post("/client/new/")
 async def create_client(client: Client, api_key: APIKey = Depends(get_api_key)):
     client = jsonable_encoder(client)
-    new_client = await db["client"].insert_one(client)
-    created_client = await db["client"].find_one({"_id": new_client.inserted_id})
+    new_client = db["client"].insert_one(client)
+    created_client = db["client"].find_one({"_id": new_client.inserted_id})
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_client)
 
 
@@ -65,7 +65,7 @@ async def create_client(client: Client, api_key: APIKey = Depends(get_api_key)):
 async def update_client(
     id: str, client: Client, api_key: APIKey = Depends(get_api_key)
 ):
-    update_client = await (
+    update_client = (
         db["client"].update_one({"_id": id}, {"$set": client.dict()}).raw_result
     )
 
@@ -75,7 +75,7 @@ async def update_client(
 @noGrill.get("/order/")
 async def list_orders(api_key: APIKey = Depends(get_api_key)):
     orders = []
-    async for order in db["order"].find():
+    for order in db["order"].find():
         orders.append(Order(**order))
         orders = jsonable_encoder(orders)
     return JSONResponse(status_code=status.HTTP_200_OK, content=orders)
@@ -84,8 +84,8 @@ async def list_orders(api_key: APIKey = Depends(get_api_key)):
 @noGrill.post("/order/new/")
 async def create_order(order: Order, api_key: APIKey = Depends(get_api_key)):
     order = jsonable_encoder(order)
-    new_order = await db["order"].insert_one(order)
-    created_order = await db["order"].find_one({"_id": new_order.inserted_id})
+    new_order = db["order"].insert_one(order)
+    created_order = db["order"].find_one({"_id": new_order.inserted_id})
     print(created_order["client_id"])
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_order)
 
@@ -93,7 +93,7 @@ async def create_order(order: Order, api_key: APIKey = Depends(get_api_key)):
 @noGrill.get("/stock/")
 async def list_stock(api_key: APIKey = Depends(get_api_key)):
     stocks = []
-    async for stock in db["stock"].find():
+    for stock in db["stock"].find():
         stocks.append(Stock(**stock))
         stock = jsonable_encoder(stock)
     return JSONResponse(status_code=status.HTTP_200_OK, content=stocks)
@@ -102,14 +102,14 @@ async def list_stock(api_key: APIKey = Depends(get_api_key)):
 @noGrill.post("/stock/new/")
 async def create_stock(stock: Stock, api_key: APIKey = Depends(get_api_key)):
     stock = jsonable_encoder(stock)
-    new_stock = await db["stock"].insert_one(stock)
-    created_stock = await db["stock"].find_one({"_id": new_stock.inserted_id})
+    new_stock = db["stock"].insert_one(stock)
+    created_stock = db["stock"].find_one({"_id": new_stock.inserted_id})
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_stock)
 
 
 @noGrill.put("/stock/{id}")
 async def update_stock(id: str, stock: Stock, api_key: APIKey = Depends(get_api_key)):
-    update_stock = await (
+    update_stock = (
         db["stock"].update_one({"_id": id}, {"$set": stock.dict()}).raw_result
     )
     return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)
