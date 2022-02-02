@@ -26,7 +26,7 @@ async def list_others(api_key: APIKey = Depends(get_api_key)):
 
 
 @noGrill.get("/client/")
-async def list_clients(api_key: APIKey = Depends(get_api_key)):
+async def list_clients():
     clients = []
     for client in db["client"].find():
         clients.append(Client(**client))
