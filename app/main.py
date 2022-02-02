@@ -112,6 +112,4 @@ async def update_stock(id: str, stock: Stock, api_key: APIKey = Depends(get_api_
     update_stock = await (
         db["stock"].update_one({"_id": id}, {"$set": stock.dict()}).raw_result
     )
-
-
-return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)
+    return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)
