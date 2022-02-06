@@ -31,7 +31,7 @@ class Burger(BaseModel):
     name: str
     price: float
     cost: float
-    ingredients: list
+    ingredients: str
 
     class Config:
         allow_population_by_field_name = True
