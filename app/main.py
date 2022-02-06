@@ -1,10 +1,10 @@
 from unidecode import unidecode
-from app.security import get_api_key
 from fastapi.responses import JSONResponse
 from fastapi.security.api_key import APIKey
 from fastapi import FastAPI, status, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
+from app.security import get_api_key, get_api_key_admin
 from app.models import db, Burger, Other, Client, Order, Stock
 
 noGrill = FastAPI(openapi_url=None)
@@ -37,7 +37,7 @@ async def list_others(api_key: APIKey = Depends(get_api_key)):
 
 
 @noGrill.get("/client/")
-async def list_clients(api_key: APIKey = Depends(get_api_key)):
+async def list_clients(api_key: APIKey = Depends(get_api_key_admin)):
     clients = []
     for client in db["client"].find():
         clients.append(Client(**client))
@@ -46,7 +46,7 @@ async def list_clients(api_key: APIKey = Depends(get_api_key)):
 
 
 @noGrill.get("/client/{client_name}")
-async def one_clients(client_name: str, api_key: APIKey = Depends(get_api_key)):
+async def one_clients(client_name: str, api_key: APIKey = Depends(get_api_key_admin)):
     clients = []
     client_filter = []
 
@@ -65,7 +65,7 @@ async def one_clients(client_name: str, api_key: APIKey = Depends(get_api_key)):
 
 
 @noGrill.post("/client/new/")
-async def create_client(client: Client, api_key: APIKey = Depends(get_api_key)):
+async def create_client(client: Client, api_key: APIKey = Depends(get_api_key_admin)):
     client = jsonable_encoder(client)
     new_client = db["client"].insert_one(client)
     created_client = db["client"].find_one({"_id": new_client.inserted_id})
@@ -74,7 +74,7 @@ async def create_client(client: Client, api_key: APIKey = Depends(get_api_key)):
 
 @noGrill.put("/client/{id}")
 async def update_client(
-    id: str, client: Client, api_key: APIKey = Depends(get_api_key)
+    id: str, client: Client, api_key: APIKey = Depends(get_api_key_admin)
 ):
     update_client = (
         db["client"].update_one({"_id": id}, {"$set": client.dict()}).raw_result
@@ -84,7 +84,7 @@ async def update_client(
 
 
 @noGrill.get("/order/")
-async def list_orders(api_key: APIKey = Depends(get_api_key)):
+async def list_orders(api_key: APIKey = Depends(get_api_key_admin)):
     orders = []
     for order in db["order"].find():
         orders.append(Order(**order))
@@ -102,7 +102,7 @@ async def create_order(order: Order, api_key: APIKey = Depends(get_api_key)):
 
 
 @noGrill.get("/stock/")
-async def list_stock(api_key: APIKey = Depends(get_api_key)):
+async def list_stock(api_key: APIKey = Depends(get_api_key_admin)):
     stocks = []
     for stock in db["stock"].find():
         stocks.append(Stock(**stock))
@@ -111,7 +111,7 @@ async def list_stock(api_key: APIKey = Depends(get_api_key)):
 
 
 @noGrill.post("/stock/new/")
-async def create_stock(stock: Stock, api_key: APIKey = Depends(get_api_key)):
+async def create_stock(stock: Stock, api_key: APIKey = Depends(get_api_key_admin)):
     stock = jsonable_encoder(stock)
     new_stock = db["stock"].insert_one(stock)
     created_stock = db["stock"].find_one({"_id": new_stock.inserted_id})
@@ -119,7 +119,9 @@ async def create_stock(stock: Stock, api_key: APIKey = Depends(get_api_key)):
 
 
 @noGrill.put("/stock/{id}")
-async def update_stock(id: str, stock: Stock, api_key: APIKey = Depends(get_api_key)):
+async def update_stock(
+    id: str, stock: Stock, api_key: APIKey = Depends(get_api_key_admin)
+):
     update_stock = (
         db["stock"].update_one({"_id": id}, {"$set": stock.dict()}).raw_result
     )

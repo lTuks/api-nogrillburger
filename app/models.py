@@ -6,6 +6,7 @@ from typing import Optional
 from bson import ObjectId
 
 URI = os.environ["MONGODB_URI"]
+## Url = "mongodb+srv://dbNoGrill:XFN0bN4NJqQ0pYXz@nogrillburger.fvgs7.mongodb.net/NoGrillBurger?retryWrites=true&w=majority"
 client = MongoClient(URI)
 db = client["NoGrillBurger"]
 
