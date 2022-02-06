@@ -23,6 +23,7 @@ async def list_burgers(api_key: APIKey = Depends(get_api_key)):
     burgers = []
     for burger in db["burger"].find():
         burgers.append(Burger(**burger))
+    burgers = jsonable_encoder(burgers)
     return JSONResponse(status_code=status.HTTP_200_OK, content=burgers)
 
 
@@ -31,6 +32,7 @@ async def list_others(api_key: APIKey = Depends(get_api_key)):
     others = []
     for other in db["other"].find():
         others.append(Other(**other))
+    others = jsonable_encoder(others)
     return JSONResponse(status_code=status.HTTP_200_OK, content=others)
 
 
