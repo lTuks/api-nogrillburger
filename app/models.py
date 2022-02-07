@@ -68,9 +68,9 @@ class Client(BaseModel):
 
 class Order(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
-    client_id: Optional[PyObjectId]
-    burger_id: Optional[PyObjectId]
-    other_id: Optional[PyObjectId]
+    client_id: Optional[str]
+    burger_id: Optional[str]
+    other_id: Optional[str]
     table: Optional[int]
     price: float
     delivery: bool
