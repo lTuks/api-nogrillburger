@@ -31,7 +31,6 @@ class Burger(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     name: str
     price: float
-    cost: float
     ingredients: str
 
     class Config:
@@ -40,11 +39,34 @@ class Burger(BaseModel):
         json_encoders = {ObjectId: str}
 
 
-class Other(BaseModel):
+class Smash(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     name: str
     price: float
-    cost: float
+    ingredients: str
+
+    class Config:
+        allow_population_by_field_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+
+class Drink(BaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    name: str
+    price: float
+    description: str
+
+    class Config:
+        allow_population_by_field_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+
+class Portion(BaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    name: str
+    price: float
     description: str
 
     class Config:
@@ -68,27 +90,12 @@ class Client(BaseModel):
 
 class Order(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
-    client_id: Optional[str]
-    burger_id: Optional[str]
-    other_id: Optional[str]
+    client = str
+    order: Optional[list]
     table: Optional[int]
     price: float
     delivery: bool
     active: bool
-    date: datetime
-
-    class Config:
-        allow_population_by_field_name = True
-        arbitrary_types_allowed = True
-        json_encoders = {ObjectId: str}
-
-
-class Stock(BaseModel):
-    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
-    burger_id: Optional[PyObjectId]
-    other_id: Optional[PyObjectId]
-    cost: float
-    amount: int
     date: datetime
 
     class Config:
